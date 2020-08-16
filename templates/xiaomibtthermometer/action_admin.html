@@ -1,0 +1,22 @@
+
+ <!-- action usual -->
+ <!-- table xiaomibtthermometer_devices search -->
+ [#if VIEW_MODE="search_xiaomibtthermometer_devices" || VIEW_MODE=""#]
+  [#inc xiaomibtthermometer_devices_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table xiaomibtthermometer_devices search -->
+ <!-- table xiaomibtthermometer_devices refresh -->
+ [#if VIEW_MODE="refresh_xiaomibtthermometer_devices"#]
+  [#inc xiaomibtthermometer_devices_refresh.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table xiaomibtthermometer_devices refresh -->
+ <!-- table xiaomibtthermometer_devices edit -->
+ [#if VIEW_MODE="edit_xiaomibtthermometer_devices"#]
+   [#inc xiaomibtthermometer_devices_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table xiaomibtthermometer_devices edit -->
+ <!-- table xiaomibtthermometer_devices view --> 
+ [#if VIEW_MODE="view_xiaomibtthermometer_devices"#]
+   [#inc xiaomibtthermometer_devices_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table xiaomibtthermometer_devices view -->

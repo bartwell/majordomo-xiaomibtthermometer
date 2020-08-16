@@ -1,0 +1,122 @@
+<!-- Table 'xiaomibtthermometer_devices' edit -->
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+    [#if OK#]
+    <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+    [#endif OK#]
+    [#if ERR#]
+    <div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
+    [#endif ERR#]
+    <fieldset>
+        [#if ID=""#]
+        <legend><#LANG_NEW_RECORD#></legend>
+        [#endif ID#]
+        <!-- TITLE (varchar) -->
+        <div class="form-group[#if ERR_TITLE#] has-error[#endif#]">
+            <label for="title" class="col-lg-3 control-label">
+                <#LANG_TITLE#>:
+                (*)
+            </label>
+            <div class="col-lg-9"><input id="title" name="title" value="[#TITLE#]" type="text" class="form-control">
+            </div>
+        </div>
+        <!-- MAC (varchar) -->
+        <div class="form-group[#if ERR_MAC#] has-error[#endif#]">
+            <label for="mac" class="col-lg-3 control-label">
+                MAC:
+            </label>
+            <div class="col-lg-9" id="mac">[#MAC#]</div>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <!-- TEMPERATURE (varchar) -->
+                    <span for="temperature" class="col-lg-3 control-label">Температура:</span>
+                </td>
+                <td>
+                    <span class="form-group[#if ERR_TEMPERATURE#] has-error[#endif#]">
+                            <span class="col-lg-9" id="temperature">[#TEMPERATURE#]</span>
+                    </span>
+                </td>
+                <td>
+                    <!-- LINKED_OBJECT (varchar) -->
+                    <span class="form-group[#if ERR_LINKED_OBJECT_TEMPERATURE#] has-error[#endif#]">
+                        <span class="col-lg-9">
+                         <input id="linked_object_temperature" name="linked_object_temperature"
+                                value="[#LINKED_OBJECT_TEMPERATURE#]"
+                                type="text" class="form-control">
+                        </span>
+                    </span>
+                </td>
+                <td>
+                    <!-- LINKED_PROPERTY (varchar) -->
+                    <span class="form-group[#if ERR_LINKED_PROPERTY_TEMPERATURE#] has-error[#endif#]">
+                        <span class="col-lg-9">
+                         <input id="linked_property_temperature"
+                                name="linked_property_temperature"
+                                value="[#LINKED_PROPERTY_TEMPERATURE#]" type="text"
+                                class="form-control">
+                        </span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <!-- HUMIDITY (varchar) -->
+                    <span for="humidity" class="col-lg-3 control-label">
+                            Влажность:
+                        </span>
+                </td>
+                <td>
+                 <span class="form-group[#if ERR_HUMIDITY#] has-error[#endif#]">
+                        <span class="col-lg-9" id="humidity">[#HUMIDITY#]</span>
+                    </span>
+                </td>
+                <td>
+                    <!-- LINKED_OBJECT (varchar) -->
+                    <span class="form-group[#if ERR_LINKED_OBJECT_HUMIDITY#] has-error[#endif#]">
+                        <span class="col-lg-9">
+                         <input id="linked_object_humidity" name="linked_object_humidity"
+                                value="[#LINKED_OBJECT_HUMIDITY#]"
+                                type="text" class="form-control">
+                        </span>
+                    </span>
+                </td>
+                <td>
+                    <!-- LINKED_PROPERTY (varchar) -->
+                    <span class="form-group[#if ERR_LINKED_PROPERTY_HUMIDITY#] has-error[#endif#]">
+                        <span class="col-lg-9">
+                         <input id="linked_property_humidity" name="linked_property_humidity"
+                                value="[#LINKED_PROPERTY_HUMIDITY#]" type="text"
+                                class="form-control">
+                        </span>
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <!-- UPDATED (datetime) -->
+        <div class="form-group[#if ERR_UPDATED#] has-error[#endif#]">
+            <label class="col-lg-3 control-label" [#if ERR_UPDATED#] style="color:red;font-weight:bold"
+                   [#endif#]>
+                <#LANG_UPDATED#>:
+            </label>
+            <div class="col-lg-4">[#UPDATED#]</div>
+        </div>
+        [#module name="linkedobject" object_field="linked_object_temperature" property_field="linked_property_temperature"#]
+        [#module name="linkedobject" object_field="linked_object_humidity" property_field="linked_property_humidity"#]
+        <div class="form-group">
+            <div class="col-lg-offset-3 col-lg-4">
+                [#if ID!=""#]
+                <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#>
+                </button>
+                [#else ID#]
+                <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
+                [#endif ID#]
+                <a href="?" class="btn btn-default "><#LANG_CANCEL#></a>
+                <input type="hidden" name="id" value="<#ID#>">
+                <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+                <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+                <input type="hidden" name="mode" value="update">
+            </div>
+        </div>
+    </fieldset>
+</form>

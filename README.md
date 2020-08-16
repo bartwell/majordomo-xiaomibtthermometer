@@ -1,1 +1,1 @@
-# majordomo-xiaomibtthermometer
+Модуль для [MajorDoMo](https://mjdm.ru/) для получения данных (температуры и влажности) с термометров Xiaomi с дисплеем посредством Bluetooth. Только для Linux.
