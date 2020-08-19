@@ -21,25 +21,25 @@ $bts_reset = 'sudo hciconfig hci0 down; sudo hciconfig hci0 up';
 //   exit; // no devices added -- no need to run this cycle
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $latest_check = 0;
-$checkEvery = 60; // poll every 5 seconds
+$checkEvery = 60;
 while (1) {
     setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     if ((time() - $latest_check) > $checkEvery) {
         $latest_check = time();
         echo date('Y-m-d H:i:s') . ' Polling data...';
 
+        //reset bluetooth
+        if (time() - $reset_time > $reset_perion) {
+            echo date('Y/m/d H:i:s') . ' Reset bluetooth' . PHP_EOL;
+            exec($bts_reset);
+            $reset_time = time();
+        }
+
         // Start
         if (getGlobal('xiaomibtthermometer_refresh_devices') == '1') {
             setGlobal('xiaomibtthermometer_refresh_devices', '0');
-            //reset bluetooth
-            if (time() - $reset_time > $reset_perion) {
-                echo date('Y/m/d H:i:s') . ' Reset bluetooth' . PHP_EOL;
-                exec($bts_reset);
-                $reset_time = time();
-            }
 
             $bt_scan_arr = array();
-            $str = exec($bts_cmd, $bt_scan_arr);
             $str = exec($bts_cmd_le, $bt_scan_arr);
             $lines = array();
             $btScanArrayLength = count($bt_scan_arr);
@@ -127,20 +127,23 @@ while (1) {
 
         $res = SQLSelect("SELECT * FROM xiaomibtthermometer_devices");
         foreach ($res as $rec) {
-            $str = exec('timeout 30 gatttool -b ' . $rec['MAC'] . ' --char-write-req --handle=\'0x0038\' --value=\'0100\' --listen', $data_arr);
-            $data = implode("\n", $data_arr);
+            $data_arr = null;
+            exec('timeout 30 gatttool -b ' . $rec['MAC'] . ' --char-write-req --handle=\'0x0038\' --value=\'0100\' --listen', $data_arr);
+            $data = implode("\n", array_reverse($data_arr));
             preg_match('/0x0036 value: ([0-9a-f]{2}) ([0-9a-f]{2}) ([0-9a-f]{2}) ([0-9a-f]{2}) ([0-9a-f]{2})/m', $data, $match);
             if (sizeof($match) > 2) {
-                $rec['HUMIDITY'] = hexdec($match[3]);
-                $rec['TEMPERATURE'] = hexdec($match[2] . $match[1]) / 100;
+                $temperature = hexdec($match[2] . $match[1]) / 100;
+                $humidity = hexdec($match[3]);
+                $rec['HUMIDITY'] = $humidity;
+                $rec['TEMPERATURE'] = $temperature;
                 $rec['UPDATED'] = date('Y-m-d H:i:s');
-                SQLUpdate('xiaomibtthermometer_devices', $rec);
                 if ($rec['LINKED_OBJECT_TEMPERATURE'] && $rec['LINKED_PROPERTY_TEMPERATURE']) {
-                    setGlobal($rec['LINKED_OBJECT_TEMPERATURE'] . '.' . $rec['LINKED_PROPERTY_TEMPERATURE'], $rec['TEMPERATURE']);
+                    setGlobal($rec['LINKED_OBJECT_TEMPERATURE'] . '.' . $rec['LINKED_PROPERTY_TEMPERATURE'], $temperature);
                 }
                 if ($rec['LINKED_OBJECT_HUMIDITY'] && $rec['LINKED_PROPERTY_HUMIDITY']) {
-                    setGlobal($rec['LINKED_OBJECT_HUMIDITY'] . '.' . $rec['LINKED_PROPERTY_HUMIDITY'], $rec['HUMIDITY']);
+                    setGlobal($rec['LINKED_OBJECT_HUMIDITY'] . '.' . $rec['LINKED_PROPERTY_HUMIDITY'], $humidity);
                 }
+                SQLUpdate('xiaomibtthermometer_devices', $rec);
             }
         }
     }
